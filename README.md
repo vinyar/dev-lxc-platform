@@ -8,10 +8,20 @@ If you are running dev-lxc-platform 1.x and you want to upgrade to 2.x please us
    Running `kitchen destroy` should not destroy the second disk that holds the containers you've built as long
    as you have the `vagrant-persistent-storage` plugin installed.
 
-2. Make sure you have the latest version of Vagrant and Virtualbox installed.
+2. Make sure you have the stable version of Vagrant and Virtualbox installed before upgrading to the latest.
+ * it's generally a good idea to upgrade one component at a time. 
+ * Virtualbox 5.0.16 is known to work
+ * vagrant  1.7.4 is known to work; 1.8.1 is known to be broken
+```
+    VBoxManage --version
+    brew cask info virtualbox
+    brew cask install virtualbox
+    vagrant --version
+    brew cask info vagrant
+```
+3. Install the `vagrant-persistent-storage` plugin.
+   `vagrant plugin install vagrant-persistent-storage`
 
-3. Upgrade the `vagrant-persistent-storage` plugin.
-   `vagrant plugin update vagrant-persistent-storage`
 
 4. Run `git pull --rebase` if you already have a clone of the dev-lxc-platform repository or download the
    latest dev-lxc-platform cookbook code.

@@ -10,16 +10,17 @@ with its persistent storage disk.
    Destroying the VM before downloading the new dev-lxc-platform code avoids complications caused by the new
    `.kitchen.yml` file pointing to the Ubuntu 15.10 image.
 
-2. Make sure you have the latest version of Vagrant and Virtualbox installed.
+2. Make sure you have the recent version of Vagrant and Virtualbox installed before upgrading to the latest.
 
-3. Upgrade the `vagrant-persistent-storage` plugin.
-   `vagrant plugin update vagrant-persistent-storage`
+3. Install the `vagrant-persistent-storage` plugin.
+   `vagrant plugin install vagrant-persistent-storage`
 
 4. WARNING - existing containers will be destroyed. Destroy the persistent storage disk.
    `rm ~/VirtualBox VMs/dev-lxc-platform.vdi`
 
 5. Run `git pull --rebase` if you already have a clone of the dev-lxc-platform repository or download the
    latest dev-lxc-platform cookbook code.
+ * `git clone https://github.com/jeremiahsnapp/dev-lxc-platform.git`
 
 6. Delete the `Berksfile.lock` file if it exists so new versions of required cookbooks will be used.
 
@@ -27,6 +28,7 @@ with its persistent storage disk.
    Ubuntu 15.10 host VM.
 
 8. Login to the new VM and start using the new dev-lxc 2.0 tool.
+ * `kitchen login`
 
 ## Description
 
@@ -52,18 +54,28 @@ Creating snapshot clones of Btrfs backed containers is very fast which is helpfu
 especially for experimenting and troubleshooting.
 
 ## Requirements
-
-Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-
-Download and install [Vagrant](https://www.vagrantup.com/downloads.html).
-
-Install the vagrant-persistent-storage plugin.
-
+* brew is optional
 ```
-vagrant plugin install vagrant-persistent-storage
+   VBoxManage --version
+   brew cask info virtualbox
+   
+   vagrant --version
+   brew cask info vagrant
+   brew cask install vagrant
 ```
 
-Download and install [ChefDK](http://downloads.chef.io/chef-dk/).
+
+Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).  
+ `brew cask install virtualbox` (brew is optional)
+
+Download and install [Vagrant](https://www.vagrantup.com/downloads.html).  
+ `brew cask install vagrant` (brew is optional)
+
+Install the vagrant-persistent-storage plugin.  
+`vagrant plugin install vagrant-persistent-storage`
+
+Download and install [ChefDK](http://downloads.chef.io/chef-dk/).  
+`curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -c stable -P chefdk`
 
 ### Workstation to Container Networking
 
@@ -82,7 +94,7 @@ For OS X you can run the following command.
 
 ### Kitchen Configuration
 
-The dev-lxc-platform repo contains a .kitchen.yml which uses an Ubuntu 14.04
+The dev-lxc-platform repo contains a .kitchen.yml which uses an Ubuntu 15.04
 [Vagrant base box](https://github.com/opscode/bento) created by Chef.
 
 The .kitchen.yml is configured to install ChefDK into the Vagrant VM for provisioning.
@@ -110,7 +122,7 @@ destroyed and reattached when the VM is created.
 While this persistent volume allows the Vagrant VM to be treated as disposable I recommend
 that you don't bother destroying the VM regularly unless you want to wait for it to be
 provisioned each time.  I keep the VM running a lot of the time so I can jump in
-and use it when I need to.  If I really want to shut it down I just `vagrant halt` it.
+and use it when I need to.  If I really want to shut it down I just `vagrant halt` it (from inside ./.kitchen/kitchen-vagrant/kitchen-dev-lxc-platform-default-ubuntu-1504 folder).
 
 ### Enable standard Vagrant commands
 
@@ -156,7 +168,83 @@ Read the following introduction to LXC if you aren't already familiar with it.
 
 ## Usage
 
-### Create the vm and converge it.
+### Quick Setup
+https://gist.github.com/jeremiahsnapp/185d32580ed7b31e3e63
+
+### Use root
+
+The following commands must be run as the root user so once you login to the Vagrant VM you
+should run `sudo -i` to login as the root user.
+
+### Create a Platform Image
+
+Use the installed dev-lxc tool to create a platform image. These platform images can then
+be cloned into new containers.
+
+You can see a menu of platform images this tool can create by using the following command.
+
+```
+dev-lxc create
+```
+
+The initial creation of platform images can take a few minutes so let's start creating
+an Ubuntu 14.04 image now.
+
+```
+dev-lxc create p-ubuntu-1404
+```
+
+### Base Container / Working Container Workflow
+
+The dev-lxc-platform has a number of bash functions with names that begin with `xc-`.
+Many of these are simple wrappers around their counterpart `lxc-` command.
+Type `xc-` and hit the TAB key a couple times to see the list of commands.
+
+The `xc-` commands are designed to use environment variables to identify what container to
+act on. This makes the commands easier to run compared to the `lxc-` commands requirements.
+
+The `BASE_CONTAINER` environment variable can be set to the name of the container that
+should be used during cloning operations.
+
+If the name of the base container is specified when running an `xc-` command then the
+`BASE_CONTAINER` variable is set to that name. Then subsequent `xc-` commands can be
+run without specifying the name and the same container will continue to be treated as the
+base container.
+
+The `WORKING_CONTAINER` environment variable can be set to the name of the container that
+should be acted on by the `xc-` command.
+
+If the name of the working container is specified when running an `xc-` command then the
+`WORKING_CONTAINER` variable is set to that name. Then subsequent `xc-` commands can be
+run without specifying the name and the same container will continue to be treated as the
+working container.
+
+For example:
+
+Clone base container named "p-ubuntu-1404" into working container named "test.lxc" and start it.
+
+```
+xc-start p-ubuntu-1404 test.lxc
+```
+
+Show (or manually set) the name of the base container and working container.
+
+```
+xc-base
+xc-working
+```
+
+Destroy "test.lxc".
+
+```
+xc-destroy
+```
+
+Re-clone base container named "p-ubuntu-1404" into working container named "test.lxc" and start it.
+
+```
+xc-start
+```
 
     kitchen converge
 
@@ -182,4 +270,11 @@ will give you a list of frequently used key bindings.
 
 ### Use dev-lxc
 
-Read the [dev-lxc README](https://github.com/jeremiahsnapp/dev-lxc)
+```
+dev-lxc help configure-chef-client
+dev-lxc help bootstrap-container
+```
+
+#### Alex's notes
+ - I had to run `berks vendor cookbooks` before kitchen succeeded. 
+  - Not sure if it's my machine issue or current DK or glitch in the matrix

@@ -6,8 +6,9 @@ driver:
   customize:
     cpus: 4
     memory: 6144
-#  synced_folders:
-#    - ["~/dev", "/root/dev"]
+    # natdnshostresolver1: "on"
+  synced_folders:
+    - ["../", "/root/dev"]
   network:
     - ["private_network", {ip: "33.33.34.13"}]
   persistent_storage:
@@ -27,6 +28,16 @@ platforms:
     driver:
       box: opscode-ubuntu-15.10
       box_url: https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box
+  # - name: ubuntu-15.04
+  #   driver:
+  #     box: opscode-ubuntu-15.04
+  #     box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-15.04_chef-provisionerless.box
+    attributes:
+      apt:
+        compile_time_update: true
+        compiletime: true
+      # ntp:
+      #   apparmor_enabled: false
 
 suites:
   - name: default

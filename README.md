@@ -183,6 +183,9 @@ Read the following introduction to LXC if you aren't already familiar with it.
 
 ## Usage
 
+### Quick Setup
+https://gist.github.com/jeremiahsnapp/185d32580ed7b31e3e63
+
 ### Use root
 
 The following commands must be run as the root user so once you login to the Vagrant VM you

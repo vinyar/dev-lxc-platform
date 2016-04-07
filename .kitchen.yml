@@ -7,8 +7,8 @@ driver:
     cpus: 4
     memory: 6144
     natdnshostresolver1: "on"
-#  synced_folders:
-#    - ["~/dev", "/root/dev"]
+  synced_folders:
+    - ["/Users/alexvinyar/Documents/Support/lxc", "/root/dev"]
   network:
     - ["private_network", {ip: "33.33.34.13"}]
   persistent_storage:
@@ -28,6 +28,14 @@ platforms:
     driver:
       box: opscode-ubuntu-15.04
       box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-15.04_chef-provisionerless.box
+    attributes:
+      apt:
+        compile_time_update: true
+    #   delivery_build:
+    #     chefdk_version: 0.7.0
+    #     delivery-cli:
+    #       artifact: https://s3-us-west-2.amazonaws.com/give-me-delivery-now/delivery-cli-0.0.0%2B20150824144123-1.exe
+    #       checksum: bdfbd19c7885ae42120296839f314200c724dc1d548554c812673e921673bb3f
 
 suites:
   - name: default

@@ -4,11 +4,11 @@ driver:
   vagrantfile_erb: Vagrantfile.erb
 #  gui: true
   customize:
-    cpus: 4
-    memory: 6144
+    cpus: 3
+    memory: 4000
     natdnshostresolver1: "on"
   synced_folders:
-    - ["/Users/alexvinyar/Documents/Support/lxc", "/root/dev"]
+    - ["../", "/root/dev"]
   network:
     - ["private_network", {ip: "33.33.34.13"}]
   persistent_storage:

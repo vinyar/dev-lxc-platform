@@ -8,28 +8,20 @@ If you are running dev-lxc-platform 1.x and you want to upgrade to 2.x please us
    Running `kitchen destroy` should not destroy the second disk that holds the containers you've built as long
    as you have the `vagrant-persistent-storage` plugin installed.
 
-2. Make sure you have the stable version of Vagrant and Virtualbox installed before upgrading to the latest.
- * it's generally a good idea to upgrade one component at a time. 
- * Virtualbox 5.0.16 is known to work
- * vagrant  1.7.4 is known to work; 1.8.1 is known to be broken
-```
-    VBoxManage --version
-    brew cask info virtualbox
-    brew cask install virtualbox
-    vagrant --version
-    brew cask info vagrant
-```
+2. Make sure you have the recent version of Vagrant and Virtualbox installed before upgrading to the latest.
+
 3. Install the `vagrant-persistent-storage` plugin.
    `vagrant plugin install vagrant-persistent-storage`
 
-
 4. Run `git pull --rebase` if you already have a clone of the dev-lxc-platform repository or download the
    latest dev-lxc-platform cookbook code.
+ * `git clone https://github.com/jeremiahsnapp/dev-lxc-platform.git`
 
 5. Run `kitchen converge` from the root directory of the dev-lxc-platform cookbook to build the new
    Ubuntu 15.04 host VM.
 
 6. Login to the new VM and continue using your containers.
+ * `kitchen login`
 
 ## Description
 
@@ -55,18 +47,28 @@ Creating snapshot clones of Btrfs backed containers is very fast which is helpfu
 especially for experimenting and troubleshooting.
 
 ## Requirements
-
-Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-
-Download and install [Vagrant](https://www.vagrantup.com/downloads.html).
-
-Install the vagrant-persistent-storage plugin.
-
+* brew is optional
 ```
-vagrant plugin install vagrant-persistent-storage
+   VBoxManage --version
+   brew cask info virtualbox
+   
+   vagrant --version
+   brew cask info vagrant
+   brew cask install vagrant
 ```
 
-Download and install [ChefDK](http://downloads.chef.io/chef-dk/).
+
+Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).  
+ `brew cask install virtualbox` (brew is optional)
+
+Download and install [Vagrant](https://www.vagrantup.com/downloads.html).  
+ `brew cask install vagrant` (brew is optional)
+
+Install the vagrant-persistent-storage plugin.  
+`vagrant plugin install vagrant-persistent-storage`
+
+Download and install [ChefDK](http://downloads.chef.io/chef-dk/).  
+`curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -c stable -P chefdk`
 
 ### Workstation to Container Networking
 
@@ -85,7 +87,7 @@ For OS X you can run the following command.
 
 ### Kitchen Configuration
 
-The dev-lxc-platform repo contains a .kitchen.yml which uses an Ubuntu 14.04
+The dev-lxc-platform repo contains a .kitchen.yml which uses an Ubuntu 15.04
 [Vagrant base box](https://github.com/opscode/bento) created by Chef.
 
 The .kitchen.yml is configured to install ChefDK into the Vagrant VM for provisioning.
@@ -117,7 +119,7 @@ destroyed and reattached when the VM is created.
 While this persistent volume allows the Vagrant VM to be treated as disposable I recommend
 that you don't bother destroying the VM regularly unless you want to wait for it to be
 provisioned each time.  I keep the VM running a lot of the time so I can jump in
-and use it when I need to.  If I really want to shut it down I just `vagrant halt` it.
+and use it when I need to.  If I really want to shut it down I just `vagrant halt` it (from inside ./.kitchen/kitchen-vagrant/kitchen-dev-lxc-platform-default-ubuntu-1504 folder).
 
 ### Connect to the vm.
 
@@ -296,3 +298,7 @@ Read the help docs for the following commands.
 dev-lxc help configure-chef-client
 dev-lxc help bootstrap-container
 ```
+
+#### Alex's notes
+ - I had to run `berks vendor cookbooks` before kitchen succeeded. 
+  - Not sure if it's my machine issue or current DK or glitch in the matrix

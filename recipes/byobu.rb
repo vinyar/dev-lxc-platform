@@ -1,4 +1,9 @@
 # byobu installs and enhances screen and tmux terminal multiplexers
+# apt_update 'apt repo update created by alex because apt doesnt seem to refresh it' do
+#   action :update
+#   only_if { node['platform_family'] == 'debian' }
+# end
+
 package 'byobu'
 
 directory '/root/.byobu' do

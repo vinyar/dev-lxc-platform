@@ -1,4 +1,4 @@
-include_recipe 'apt'
+# include_recipe 'apt'
 
 package "linux-headers-#{node['kernel']['release']}"
 

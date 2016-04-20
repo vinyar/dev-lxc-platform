@@ -1,5 +1,7 @@
 directory '/btrfs/lxclib'
+
 directory '/var/lib/lxc'
+
 mount '/var/lib/lxc' do
   device '/btrfs/lxclib'
   fstype 'none'
@@ -9,7 +11,9 @@ mount '/var/lib/lxc' do
 end
 
 directory '/btrfs/lxccache'
+
 directory '/var/cache/lxc'
+
 mount '/var/cache/lxc' do
   device '/btrfs/lxccache'
   fstype 'none'

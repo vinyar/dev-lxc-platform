@@ -11,7 +11,8 @@ package ['lxd', 'lxd-client', 'lxc', 'lxcfs', 'lxc-templates'] do
 end
 
 remote_file "/etc/bash_completion.d/lxd-client" do
-  source "file:///usr/share/bash-completion/completions/lxc"
+  source 'file:///usr/share/bash-completion/completions/lxc'
+  only_if { File.exist?('file:///usr/share/bash-completion/completions/lxc') }
 end
 
 service 'lxc-net' do

@@ -9,6 +9,7 @@ driver:
     # natdnshostresolver1: "on"
   synced_folders:
     - ["../", "/root/dev"]
+    - ["/Users/alexvinyar/Documents/ISO_BOX_etc/chef-packages", "/root/dev/chef-packages"]
   network:
     - ["private_network", {ip: "33.33.34.13"}]
   persistent_storage:

@@ -20,6 +20,7 @@ execute 'enable byobu' do
   environment({ 'HOME' => '/root' })
   user 'root'
   not_if 'grep byobu-launch /root/.profile'
+  only_if node['dev-lxc-platform']['enable_byob']
 end
 
 ruby_block 'alias tls' do

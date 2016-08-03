@@ -5,10 +5,10 @@ apt_package 'ruby' do
   action :purge
 end
 
-execute "Setup ChefDK as default ruby" do
-  command "chef shell-init bash >> /root/.bashrc"
-  user "root"
-  environment( { "HOME" => "/root" } )
+execute 'Setup ChefDK as default ruby' do
+  command 'chef shell-init bash >> /root/.bashrc'
+  user 'root'
+  environment({ 'HOME' => '/root' })
   not_if "grep 'PATH=.*chefdk' /root/.bashrc"
 end
 

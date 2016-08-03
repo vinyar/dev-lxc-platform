@@ -19,26 +19,39 @@ driver:
     size: 40 * 1024
     location: File.expand_path('~/VirtualBox VMs/dev-lxc-platform.vdi')
 
+# verifier:
+#    name: inspec
+#    sudo: true
+#    format: documentation
+
+
 provisioner:
   name: chef_zero
   chef_omnibus_install_options: -P chefdk
   chef_omnibus_root: /opt/chefdk
+  # retry_on_exit_code:
+  #   - 35 # 35 is the exit code signaling that the node is rebooting
+  max_retries: 1
+  client_rb:
+    exit_status: :enabled # Opt-in to the standardized exit codes
+    client_fork: false
+
 
 platforms:
   - name: ubuntu-15.10
     driver:
-      box: ubuntu-15.10
-      # box_url: https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box
+      box: opscode-ubuntu-15.10
+      box_url: https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box
   # - name: ubuntu-15.04
   #   driver:
   #     box: opscode-ubuntu-15.04
   #     box_url: http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-15.04_chef-provisionerless.box
-    attributes:
-      apt:
-        compile_time_update: true
-        compiletime: true
-      # ntp:
-      #   apparmor_enabled: false
+  #   attributes:
+  #     apt:
+  #       compile_time_update: true
+  #       compiletime: true
+  #     ntp:
+  #       apparmor_enabled: false
 
 suites:
   - name: default
